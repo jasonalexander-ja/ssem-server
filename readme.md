@@ -30,6 +30,7 @@ Takes a given JSON serialised Manchester Baby model and runs it either until a `
 
 ```http
 POST /run HTTP/1.1
+Host: 127.0.0.1:8080
 
 {
     "main_store": [71, 38, 96, 5, -32, 1, 1, -10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -56,9 +57,10 @@ Takes an assembly listing and assembles it into a Baby model and runs it either 
 
 ```http
 POST /assemble_run HTTP/1.1
+Host: 127.0.0.1:8080
 
 {
-    "listing": "Assembly Listing",
+    "listing": "stp",
     "og_notation": false,
 }
 ```
@@ -80,9 +82,10 @@ Takes an assembly listing, and attempts to assemble it, storing the result in th
 
 ```http
 POST /assemble HTTP/1.1
+Host: 127.0.0.1:8080
 
 {
-    "listing": "Assembly Listing",
+    "listing": "stp",
     "og_notation": false,
 }
 ```
@@ -102,6 +105,7 @@ Cancels a currently running emulation, if not emulation is running it will just 
 
 ```http
 POST /cancel HTTP/1.1
+Host: 127.0.0.1:8080
 
 ```
 
@@ -135,7 +139,7 @@ POST /cancel HTTP/1.1
 **Example:**
 ```json
 {
-    "listing": "Assembly Listing",
+    "listing": "stp",
     "og_notation": false,
 }
 ```
