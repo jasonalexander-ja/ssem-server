@@ -1,4 +1,4 @@
-
+use mosquitto_rs::*;
 use tokio::sync::mpsc::{self, Receiver, Sender};
 use tokio::sync::mpsc::{error::TryRecvError, error::TrySendError};
 use base64::{Engine as _, engine::general_purpose};
@@ -72,17 +72,11 @@ fn display_model(mqtt: &MqttConfig, model: &BabyModel) {
     println!("{:?}", model)
 }
 
-fn publish_image(value: String, mqtt: &MqttConfig) -> Result<(), mosquitto_client::Error> {
-    let m = mosquitto_client::Mosquitto::new(&mqtt.client_name);
-    m.connect(&mqtt.address, 1883)?;
-    let our_mid = m.publish(&mqtt.topic, value.as_bytes(), 2, false)?;
-    let mut mc = m.callbacks(());
-    mc.on_publish( | _, mid | {
-        if mid == our_mid {
-            m.disconnect().unwrap();
-        }
-    });
-    m.loop_until_disconnect(-1)?;
+async fn publish_image(value: String, mqtt: &MqttConfig) -> Result<(), mosquitto_rs::Error> {
+    let client = Client::with_auto_id()?;
+    let _rc = client.connect(&mqtt.address, 1883, std::time::Duration::from_secs(5), None).await?;
+    client.publish(&mqtt.topic, value, QoS::AtMostOnce, false)
+        .await?;
     Ok(())
 }
 

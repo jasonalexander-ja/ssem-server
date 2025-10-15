@@ -15,4 +15,4 @@ anyhow = "1.0"
 baby-emulator = { version = "0.2.1", features = ["i8"], default-features = false }
 dotenv = "0.15"
 base64 = "0.22.1"
-mosquitto-client = "0.1.5"
+mosquitto-rs = "0.11.2"
