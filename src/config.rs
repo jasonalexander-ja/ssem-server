@@ -3,14 +3,17 @@ use dotenv::dotenv;
 
 #[derive(Clone)]
 pub struct AppSettings {
-    pub client_id: String,
-    pub client_secret: String,
-    pub issuer_url: String,
-    pub redirect_url: String,
-    pub redirect_uri: String,
-    pub origin: String,
     pub listen: String,
-    pub auth_cookie: String,
+    pub client_name: String,
+    pub address: String, 
+    pub topic: String,
+}
+
+#[derive(Clone)]
+pub struct MqttConfig {
+    pub client_name: String,
+    pub address: String, 
+    pub topic: String,
 }
 
 impl AppSettings {
@@ -18,15 +21,19 @@ impl AppSettings {
         dotenv().ok();
 
         Ok(AppSettings {
-            client_id: get_env_key("CLIENT_ID")?,
-            client_secret: get_env_key("CLIENT_SECRET")?,
-            issuer_url: get_env_key("ISSUER_URL")?,
-            redirect_url: get_env_key("REDIRECT_URL")?,
-            redirect_uri: get_env_key("REDIRECT_URI")?,
-            origin: get_env_key("ORIGIN")?,
             listen: get_env_key("LISTEN")?,
-            auth_cookie: get_env_key("AUTH_COOKIE")?,
+            client_name: get_env_key("CLIENT_NAME")?,
+            address: get_env_key("ADDRESS")?, 
+            topic: get_env_key("TOPIC")?,
         })
+    }
+
+    pub fn get_mqtt_config(&self) -> MqttConfig {
+        MqttConfig {
+            client_name: self.client_name.clone(),
+            address: self.address.clone(),
+            topic: self.topic.clone(),
+        }
     }
 }
 
