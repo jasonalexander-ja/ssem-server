@@ -41,7 +41,7 @@ POST /run HTTP/1.1
 
 **Model:**
 
-- [BabyModel](###BabyModel)
+- [BabyModel](###babymodel)
 
 **Returns:** 
 - `200 OK`: request has been accepted and the emulation is running, sending a second run request when one is running returns;
@@ -65,7 +65,7 @@ POST /assemble_run HTTP/1.1
 
 **Model:**
 
-- [Assembly](###Assembly)
+- [Assembly](###assembly)
 
 **Returns:** 
 - `200 OK`: request has been accepted and the emulation is running, sending a second run request when one is running returns;
@@ -76,7 +76,7 @@ POST /assemble_run HTTP/1.1
 
 ### /assemble
 
-Takes an assembly listing, and attempts to assemble it, storing the result in the returned [###BabyModel] ready to be ran. 
+Takes an assembly listing, and attempts to assemble it, storing the result in the returned [BabyModel](###babymodel) ready to be ran. 
 
 ```http
 POST /assemble HTTP/1.1
@@ -89,10 +89,10 @@ POST /assemble HTTP/1.1
 
 **Model:**
 
-- [Assembly](###Assembly)
+- [Assembly](###assembly)
 
 **Returns:** 
-- `200 OK`: sucessfully assembled and returned a [BabyModel](###BabyModel)
+- `200 OK`: sucessfully assembled and returned a [BabyModel](###babymodel)
 - `400 BAD REQUEST`: invalid emulation model submitted, or an error was encountered when assembling `listing` (body will contain the error message) 
 - `500 INTERNAL SERVER ERROR` 
 
