@@ -7,6 +7,7 @@ pub struct AppSettings {
     pub address: String, 
     pub display_topic: String,
     pub buffer_topic: String,
+    pub discord: String
 }
 
 #[derive(Clone)]
@@ -14,6 +15,7 @@ pub struct MqttConfig {
     pub address: String, 
     pub display_topic: String,
     pub buffer_topic: String,
+    pub discord: String
 }
 
 impl AppSettings {
@@ -25,6 +27,7 @@ impl AppSettings {
             address: get_env_key("ADDRESS")?, 
             display_topic: get_env_key("DISPLAY_TOPIC")?,
             buffer_topic: get_env_key("BUFFER_TOPIC")?,
+            discord: get_env_key("DISCORD")?,
         })
     }
 
@@ -32,7 +35,8 @@ impl AppSettings {
         MqttConfig {
             address: self.address.clone(),
             display_topic: self.display_topic.clone(),
-            buffer_topic: self.buffer_topic.clone()
+            buffer_topic: self.buffer_topic.clone(),
+            discord: self.discord.clone()
         }
     }
 }
