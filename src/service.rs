@@ -56,7 +56,7 @@ async fn run_model_inner(mqtt: &MqttConfig, model: BabyModel, rec: &mut Receiver
                 let _ = send_discord_message(
                     format!("💾 Flipdot Baby Emulator Run Result: \r\n") + 
                     &format!("Accumulator: {}\r\n", model.accumulator) +
-                    &format!("Main store: {:?}", model.accumulator), 
+                    &format!("Main store: {:?}", model.main_store), 
                     &mqtt
                 ).await;
                 return true 
