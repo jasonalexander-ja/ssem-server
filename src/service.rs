@@ -37,6 +37,13 @@ async fn service_routine(mqtt: MqttConfig, rec: Receiver<Request>) {
 }
 
 async fn run_model(mqtt: MqttConfig, model: BabyModel, rec: &mut Receiver<Request>) -> bool {
+    let _ = switch_buffer(12, &mqtt).await;
+    let res = run_model_inner(&mqtt, model, rec).await;
+    let _ = switch_buffer(0, &mqtt);
+    res
+}
+
+async fn run_model_inner(mqtt: &MqttConfig, model: BabyModel, rec: &mut Receiver<Request>) -> bool {
     let mut start = SystemTime::now();
     let mut model = if let Ok(v) = model.execute() { v } else { return true };
     display_model(&mqtt, &model).await;
@@ -73,7 +80,15 @@ async fn display_model(mqtt: &MqttConfig, model: &BabyModel) {
 async fn publish_image(value: Vec<u8>, mqtt: &MqttConfig) -> Result<(), mosquitto_rs::Error> {
     let client = Client::with_auto_id()?;
     let _rc = client.connect(&mqtt.address, 1883, std::time::Duration::from_secs(5), None).await?;
-    client.publish(&mqtt.topic, value, QoS::AtMostOnce, false)
+    client.publish(&mqtt.display_topic, value, QoS::AtMostOnce, false)
+        .await?;
+    Ok(())
+}
+
+async fn switch_buffer(buffer: u8, mqtt: &MqttConfig) -> Result<(), mosquitto_rs::Error> {
+    let client = Client::with_auto_id()?;
+    let _rc = client.connect(&mqtt.address, 1883, std::time::Duration::from_secs(5), None).await?;
+    client.publish(&mqtt.buffer_topic, &vec![buffer], QoS::AtMostOnce, false)
         .await?;
     Ok(())
 }
