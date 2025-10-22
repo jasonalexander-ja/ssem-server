@@ -48,8 +48,8 @@ async fn run_model_inner(mqtt: &MqttConfig, model: BabyModel, rec: &mut Receiver
     let mut model = if let Ok(v) = model.execute() { v } else { return true };
     display_model(&mqtt, &model).await;
     loop {
-        let time = if let Ok(v) = SystemTime::now().duration_since(start) { v.as_secs() } else { return true };
-        if time >= 1 {
+        let time = if let Ok(v) = SystemTime::now().duration_since(start) { v.as_millis() } else { return true };
+        if time >= 600 {
             start = SystemTime::now();
             model = if let Ok(v) = model.execute() { v } 
             else { 
