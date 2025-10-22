@@ -37,7 +37,7 @@ async fn service_routine(mqtt: MqttConfig, rec: Receiver<Request>) {
 }
 
 async fn run_model(mqtt: MqttConfig, model: BabyModel, rec: &mut Receiver<Request>) -> bool {
-    let _ = switch_buffer(5, &mqtt).await;
+    let _ = switch_buffer(7, &mqtt).await;
     let res = run_model_inner(&mqtt, model, rec).await;
     let _ = switch_buffer(0, &mqtt).await;
     res
