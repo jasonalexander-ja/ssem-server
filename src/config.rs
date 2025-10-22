@@ -5,13 +5,17 @@ use dotenv::dotenv;
 pub struct AppSettings {
     pub listen: String,
     pub address: String, 
-    pub topic: String,
+    pub display_topic: String,
+    pub buffer_topic: String,
+    pub discord: String
 }
 
 #[derive(Clone)]
 pub struct MqttConfig {
     pub address: String, 
-    pub topic: String,
+    pub display_topic: String,
+    pub buffer_topic: String,
+    pub discord: String
 }
 
 impl AppSettings {
@@ -21,14 +25,18 @@ impl AppSettings {
         Ok(AppSettings {
             listen: get_env_key("LISTEN")?,
             address: get_env_key("ADDRESS")?, 
-            topic: get_env_key("TOPIC")?,
+            display_topic: get_env_key("DISPLAY_TOPIC")?,
+            buffer_topic: get_env_key("BUFFER_TOPIC")?,
+            discord: get_env_key("DISCORD")?,
         })
     }
 
     pub fn get_mqtt_config(&self) -> MqttConfig {
         MqttConfig {
             address: self.address.clone(),
-            topic: self.topic.clone(),
+            display_topic: self.display_topic.clone(),
+            buffer_topic: self.buffer_topic.clone(),
+            discord: self.discord.clone()
         }
     }
 }

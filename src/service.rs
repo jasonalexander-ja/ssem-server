@@ -37,6 +37,13 @@ async fn service_routine(mqtt: MqttConfig, rec: Receiver<Request>) {
 }
 
 async fn run_model(mqtt: MqttConfig, model: BabyModel, rec: &mut Receiver<Request>) -> bool {
+    let _ = switch_buffer(5, &mqtt).await;
+    let res = run_model_inner(&mqtt, model, rec).await;
+    let _ = switch_buffer(0, &mqtt).await;
+    res
+}
+
+async fn run_model_inner(mqtt: &MqttConfig, model: BabyModel, rec: &mut Receiver<Request>) -> bool {
     let mut start = SystemTime::now();
     let mut model = if let Ok(v) = model.execute() { v } else { return true };
     display_model(&mqtt, &model).await;
@@ -44,7 +51,16 @@ async fn run_model(mqtt: MqttConfig, model: BabyModel, rec: &mut Receiver<Reques
         let time = if let Ok(v) = SystemTime::now().duration_since(start) { v.as_secs() } else { return true };
         if time >= 1 {
             start = SystemTime::now();
-            model = if let Ok(v) = model.execute() { v } else { return true };
+            model = if let Ok(v) = model.execute() { v } 
+            else { 
+                let _ = send_discord_message(
+                    format!("💾 Flipdot Baby Emulator Run Result: \r\n") + 
+                    &format!("Accumulator: {}\r\n", model.accumulator) +
+                    &format!("Main store: {:?}", model.main_store), 
+                    &mqtt
+                ).await;
+                return true 
+            };
             display_model(&mqtt, &model).await;
         }
         match rec.try_recv() {
@@ -73,7 +89,23 @@ async fn display_model(mqtt: &MqttConfig, model: &BabyModel) {
 async fn publish_image(value: Vec<u8>, mqtt: &MqttConfig) -> Result<(), mosquitto_rs::Error> {
     let client = Client::with_auto_id()?;
     let _rc = client.connect(&mqtt.address, 1883, std::time::Duration::from_secs(5), None).await?;
-    client.publish(&mqtt.topic, value, QoS::AtMostOnce, false)
+    client.publish(&mqtt.display_topic, value, QoS::AtMostOnce, false)
+        .await?;
+    Ok(())
+}
+
+async fn switch_buffer(buffer: u8, mqtt: &MqttConfig) -> Result<(), mosquitto_rs::Error> {
+    let client = Client::with_auto_id()?;
+    let _rc = client.connect(&mqtt.address, 1883, std::time::Duration::from_secs(5), None).await?;
+    client.publish(&mqtt.buffer_topic, &vec![buffer], QoS::AtMostOnce, false)
+        .await?;
+    Ok(())
+}
+
+async fn send_discord_message(buffer: String, mqtt: &MqttConfig) -> Result<(), mosquitto_rs::Error> {
+    let client = Client::with_auto_id()?;
+    let _rc = client.connect(&mqtt.address, 1883, std::time::Duration::from_secs(5), None).await?;
+    client.publish(&mqtt.discord, buffer, QoS::AtMostOnce, false)
         .await?;
     Ok(())
 }
