@@ -37,9 +37,9 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
 name = "baby-emulator"
-version = "0.2.1"
+version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2474bdf96cd07e9219b93256dc48f08995d7aa707aef5105bd114cac7b4edc72"
+checksum = "ff60a30dc1db4644843162d9a07be306d8603ddf23b7cd3ad54981eefa2919c7"
 
 [[package]]
 name = "base64"
